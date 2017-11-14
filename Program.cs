@@ -144,6 +144,7 @@ namespace cmdmanager
 
                 return Icon.FromHandle(b.GetHicon());
             }
+
             List<Process> mProcesses = new List<Process>();
 
             const int GWL_STYLE = -16;
