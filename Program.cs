@@ -29,6 +29,7 @@ namespace cmdmanager
             {
                 Width = 1024;
                 Height = 768;
+                this.Icon = GetRandomFieraIcon();
 
                 mProcesses.Add(left);
                 mProcesses.Add(right);
@@ -94,6 +95,55 @@ namespace cmdmanager
                     MoveWindow(bottom, 0, r.Height / 2, r.Width - 12, halfHeight - 38, true);
             }
 
+            static Icon GetRandomFieraIcon()
+            {
+                Color[] cs = new Color[256];
+                Random r = new Random(Environment.TickCount);
+
+                int iconWidth = 16;
+                int iconHeith = 16;
+                Bitmap b = new Bitmap(iconWidth, iconHeith);
+
+                for (int i = 0; i < 256; i++)
+                    cs[i] = Color.FromArgb(r.Next(255), r.Next(255), r.Next(255));
+
+                double xmin = r.Next(-3, -1);
+                double ymin = r.Next(-2, 0);
+                double xmax = r.Next(0, 2);
+                double ymax = r.Next(1, 3);
+                double x, y, x1, y1, xx = 0.0;
+                int looper, s, z = 0;
+                double intigralX, intigralY = 0.0;
+                intigralX = (xmax - xmin) / iconWidth;
+                intigralY = (ymax - ymin) / iconHeith;
+                x = xmin;
+
+                for (s = 1; s < iconWidth; s++)
+                {
+                    y = ymin;
+                    for (z = 1; z < iconHeith; z++)
+                    {
+                        x1 = 0;
+                        y1 = 0;
+                        looper = 0;
+                        while (looper < 100 && Math.Sqrt((x1 * x1) + (y1 * y1)) < 2)
+                        {
+                            looper++;
+                            xx = (x1 * x1) - (y1 * y1) + x;
+                            y1 = 2 * x1 * y1 + y;
+                            x1 = xx;
+                        }
+
+                        double perc = looper / (100.0);
+                        int val = ((int)(perc * 255));
+                        b.SetPixel(s, z, cs[val]);
+                        y += intigralY;
+                    }
+                    x += intigralX;
+                }
+
+                return Icon.FromHandle(b.GetHicon());
+            }
             List<Process> mProcesses = new List<Process>();
 
             const int GWL_STYLE = -16;
